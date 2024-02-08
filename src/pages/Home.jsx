@@ -1,14 +1,13 @@
 import React from "react";
 import { Categories, SortPopup, PizzaBlock } from "../components";
+import { observer } from "mobx-react-lite";
 
-function Home({ items }) {
+const Home = observer(({ items }) => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories
-          items={["Мясные", "Вегетарианская", "Гриль", "Острые", "Закрытые"]}
-        />
-        <SortPopup items={["популярности", "алфавиту", "цене"]} />
+        <Categories />
+        <SortPopup />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
@@ -18,6 +17,6 @@ function Home({ items }) {
       </div>
     </div>
   );
-}
+});
 
 export default Home;

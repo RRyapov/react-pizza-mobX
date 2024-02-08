@@ -1,23 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
+import { observer } from "mobx-react-lite";
+import { categoryFilterStorage } from "../stores";
 
-function Categories({ items }) {
-  const [activeItem, setActiveItem] = useState(null);
-
+const Categories = () => {
+  const { allCategories, chosenCategory, selectChosenCategory } =
+    categoryFilterStorage;
   return (
     <div className="categories">
       <ul>
-        <li
-          className={activeItem === null ? "active" : ""}
-          onClick={() => setActiveItem(null)}
-        >
-          Все
-        </li>
-        {items &&
-          items.map((name, index) => (
+        {allCategories &&
+          allCategories.map(({ name, id }) => (
             <li
-              className={activeItem === index ? "active" : ""}
-              onClick={() => setActiveItem(index)}
-              key={`${name}_${index}`}
+              className={chosenCategory === id ? "active" : ""}
+              onClick={() => selectChosenCategory(id)}
+              key={`${name}_${id}`}
             >
               {name}
             </li>
@@ -25,6 +21,6 @@ function Categories({ items }) {
       </ul>
     </div>
   );
-}
+};
 
-export default Categories;
+export default observer(Categories);

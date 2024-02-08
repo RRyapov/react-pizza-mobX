@@ -1,30 +1,31 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
+import { observer } from "mobx-react-lite";
+import { sortByStorage } from "../stores";
 
-export default function SortPopup({ items }) {
-  const [visiblePopup, setVisiblePopup] = useState(false);
-  const [activeItem, setActiveItem] = useState(0);
-  const activeLabel = items[activeItem];
-
-  const onSelectItem = (index) => {
-    setActiveItem(index);
-    setVisiblePopup(false);
-  };
-
-  const toggleVisiblePopup = () => {
-    setVisiblePopup(!visiblePopup);
-  };
+function SortPopup() {
+  const {
+    sortItems,
+    activeSortBy,
+    visiblePopup,
+    makeVisiblePopup,
+    setVisiblePopup,
+    setActiveSortBy,
+  } = sortByStorage;
 
   const sortRef = useRef();
 
-  const handleOutsideClick = (e) => {
-    if (!sortRef.current?.contains(e.target)) {
-      setVisiblePopup(false);
-    }
-  };
+  const handleOutsideClick = useCallback(
+    (e) => {
+      if (!sortRef.current?.contains(e.target)) {
+        setVisiblePopup(false);
+      }
+    },
+    [setVisiblePopup]
+  );
 
   useEffect(() => {
     document.body.addEventListener("click", handleOutsideClick);
-  }, []);
+  }, [handleOutsideClick]);
 
   return (
     <div ref={sortRef} className="sort">
@@ -43,16 +44,18 @@ export default function SortPopup({ items }) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={toggleVisiblePopup}>{activeLabel}</span>
+        <span onClick={makeVisiblePopup}>
+          {sortItems.find(({ type }) => type === activeSortBy).name}
+        </span>
       </div>
       {visiblePopup && (
         <div className="sort__popup">
           <ul>
-            {items &&
-              items.map((name, index) => (
+            {sortItems &&
+              sortItems.map(({ name, type }, index) => (
                 <li
-                  className={activeItem === index ? "active" : ""}
-                  onClick={() => onSelectItem(index)}
+                  className={type === activeSortBy ? "active" : ""}
+                  onClick={() => setActiveSortBy(type)}
                   key={`${name}_${index}`}
                 >
                   {name}
@@ -64,3 +67,5 @@ export default function SortPopup({ items }) {
     </div>
   );
 }
+
+export default observer(SortPopup);
