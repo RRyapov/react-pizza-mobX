@@ -6,6 +6,7 @@ import { categoryFilterStorage } from "./categoryStore";
 
 class PizzasStore {
   _pizzas = [];
+  _pizzasAreLoaded = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -15,8 +16,16 @@ class PizzasStore {
     return this._pizzas;
   }
 
+  get pizzasAreLoaded() {
+    return this._pizzasAreLoaded;
+  }
+
   setPizzas = (pizzas) => {
     this._pizzas = pizzas;
+  };
+
+  setPizzasLoaded = () => {
+    return (this._pizzasAreLoaded = true);
   };
 
   getPizzas = (category, sortBy) => {
